@@ -4,28 +4,30 @@
    PIN pracuje v rezimu pro zapis (OUTPUT)
  **************************************************************/
 
- #include <Ticker.h>
+#include <Ticker.h>
+#include <vector>
 
- #ifndef BLINK_H
- #define BLINK_H
+#ifndef BLINK_H
+#define BLINK_H
 
- class Blink {
+class Blink {
   public:
-    Blink(const int pinNumber, const int ledOnMs, const int ledOffMs, const int repetitionCount);
-    Blink(const int pinNumber, const int ledOnMs, const int ledOffMs);
+    //Blink(const int pinNumber, const int ledOnMs, const int ledOffMs, const int repetitionCount);
+    //Blink(const int pinNumber, const int ledOnMs, const int ledOffMs);
+    Blink(const int pinNumber, std::vector<int> intervals, const int repetitionCount);
 
     void start();
     void stop();
   private:
     int    _pinNumber;
-    int    _ledOnMs;
-    int    _ledOffMs;
+    std::vector<int> _intervals;
+    int    _currentInterval;
     int    _repetitionCount;
     int    _count;
     bool   _stopRequested;
     int    _state;
     Ticker _ticker;
-    void init(const int pinNumber, const int ledOnMs, const int ledOffMs, const int repetitionCount);
+    void init(const int pinNumber, std::vector<int> intervals, const int repetitionCount);
     static void changeState(Blink *blink);
 };
 

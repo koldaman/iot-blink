@@ -5,19 +5,22 @@
 
 #include "Blink.h"
 #include <Ticker.h>
+#include <vector>
 
-Blink::Blink(int pinNumber, int ledOnMs, int ledOffMs, int repetitionCount) {
-  init(pinNumber, ledOnMs, ledOffMs, repetitionCount);
+Blink::Blink(int pinNumber, std::vector<int> intervals, int repetitionCount) {
+   init(pinNumber, intervals, repetitionCount);
 }
 
-Blink::Blink(int pinNumber, int ledOnMs, int ledOffMs) {
-  init(pinNumber, ledOnMs, ledOffMs, 0);
-}
-
-void Blink::init(int pinNumber, int ledOnMs, int ledOffMs, int repetitionCount) {
+void Blink::init(int pinNumber, std::vector<int> intervals, int repetitionCount) {
    _pinNumber = pinNumber;
-   _ledOnMs = ledOnMs;
-   _ledOffMs = ledOffMs;
+
+   Serial.print("Init Intervals ");
+   Serial.println(intervals.size());
+
+   _intervals = intervals;
+   Serial.println(_intervals.size());
+
+   _currentInterval = 0;
    _repetitionCount = repetitionCount;
    _count = 0;
    _stopRequested = false;
@@ -26,37 +29,34 @@ void Blink::init(int pinNumber, int ledOnMs, int ledOffMs, int repetitionCount) 
 }
 
 void Blink::changeState(Blink *blink) {
-  if (blink->_repetitionCount > 0) {
-    if (blink->_count == blink->_repetitionCount) {
+   if (blink->_stopRequested || (blink->_repetitionCount > 0 && blink->_count == blink->_repetitionCount)) {
       blink->stop();
       return;
-    }
-  }
+   }
 
-  if (blink->_state == LOW) { // ON start
-    blink->_state = HIGH;
-    digitalWrite(blink->_pinNumber, blink->_state);
-    if (!blink->_stopRequested) {
-      blink->_ticker.attach_ms(blink->_ledOnMs, &Blink::changeState, blink);
+   blink->_state = blink->_state == LOW ? HIGH : LOW;
+   digitalWrite(blink->_pinNumber, blink->_state);
+   blink->_ticker.attach_ms(blink->_intervals[blink->_currentInterval], &Blink::changeState, blink);
+
+   if (blink->_currentInterval == blink->_intervals.size()-1) {
+      blink->_currentInterval = 0;
       blink->_count++;
-    }
-  } else {
-    blink->_state = LOW;
-    digitalWrite(blink->_pinNumber, blink->_state);
-    blink->_ticker.attach_ms(blink->_ledOffMs, &Blink::changeState, blink);
-  }
+   } else {
+      blink->_currentInterval++;
+   }
 }
 
 void Blink::stop() {
-  _state = LOW;
-  _stopRequested = true;
-  digitalWrite(_pinNumber, _state);
-  _ticker.detach();
+   _ticker.detach();
+   _state = LOW;
+   _stopRequested = true;
+   digitalWrite(_pinNumber, _state);
 }
 
 void Blink::start() {
-  stop();
-  _stopRequested = false;
-  _count = 0;
-  Blink::changeState(this);
+   stop();
+   _stopRequested = false;
+   _count = 0;
+   _currentInterval = 0;
+   Blink::changeState(this);
 }
