@@ -5,10 +5,10 @@
 const int LED_PIN = 14; // D5
 
 // 5 repetitions
-Blink blinker(LED_PIN /* PIN */, 10 /* ON MS */, 500 /* OFF MS */, 5 /* repetitions */);
+Blink blinker(LED_PIN /* PIN */, 1 /* ON MS */, 200 /* OFF MS */, 5 /* repetitions */);
 
 // repeat forever (until stop)
-Blink blinker2(LED_PIN /* PIN */, 20 /* ON MS */, 1000 /* OFF MS */, 4);
+Blink blinker2(LED_PIN /* PIN */, 1 /* ON MS */, 1000 /* OFF MS */);
 
 
 void setup() {
@@ -18,8 +18,6 @@ void setup() {
   delay(2000);
 
   blinker.start();
-  delay(4000);
-  blinker.stop();
 
   blinker2.start();
   delay(15000);
