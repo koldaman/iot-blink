@@ -7,19 +7,17 @@
 #include <Ticker.h>
 #include <vector>
 
-Blink::Blink(int pinNumber, std::vector<int> intervals, int repetitionCount) {
-   init(pinNumber, intervals, repetitionCount);
+Blink::Blink(int pinNumber) {
+   _pinNumber = pinNumber;
 }
 
-void Blink::init(int pinNumber, std::vector<int> intervals, int repetitionCount) {
+Blink::Blink(int pinNumber, std::vector<int> intervals, int repetitionCount) {
    _pinNumber = pinNumber;
+   init(intervals, repetitionCount);
+}
 
-   Serial.print("Init Intervals ");
-   Serial.println(intervals.size());
-
+void Blink::init(std::vector<int> intervals, int repetitionCount) {
    _intervals = intervals;
-   Serial.println(_intervals.size());
-
    _currentInterval = 0;
    _repetitionCount = repetitionCount;
    _count = 0;

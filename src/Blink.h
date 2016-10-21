@@ -12,10 +12,10 @@
 
 class Blink {
   public:
-    //Blink(const int pinNumber, const int ledOnMs, const int ledOffMs, const int repetitionCount);
-    //Blink(const int pinNumber, const int ledOnMs, const int ledOffMs);
+    Blink(const int pinNumber);
     Blink(const int pinNumber, std::vector<int> intervals, const int repetitionCount);
 
+    void init(std::vector<int> intervals, const int repetitionCount);
     void start();
     void stop();
   private:
@@ -27,7 +27,6 @@ class Blink {
     bool   _stopRequested;
     int    _state;
     Ticker _ticker;
-    void init(const int pinNumber, std::vector<int> intervals, const int repetitionCount);
     static void changeState(Blink *blink);
 };
 
