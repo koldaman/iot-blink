@@ -12,6 +12,7 @@
  class Blink {
   public:
     Blink(const int pinNumber, const int ledOnMs, const int ledOffMs, const int repetitionCount);
+    Blink(const int pinNumber, const int ledOnMs, const int ledOffMs);
 
     void start();
     void stop();
@@ -21,8 +22,9 @@
     int    _ledOffMs;
     int    _repetitionCount;
     int    _count;
-    Ticker _tickerOn;
-    Ticker _tickerOff;
+    bool   _stopRequested;
+    Ticker _ticker;
+    void init(const int pinNumber, const int ledOnMs, const int ledOffMs, const int repetitionCount);
     void callbackOn();
     void callbackOff();
 };
